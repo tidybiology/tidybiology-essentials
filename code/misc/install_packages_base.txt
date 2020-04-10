@@ -1,0 +1,3 @@
+install.packages(c("tidyverse", "rmarkdown", "devtools", "gridExtra", "patchwork", "rlang", "twitterwidget", "here", "knitr", "learnr", "ggrepel", "viridis"))
+
+devtools::install_github("hirscheylab/tidybiology")

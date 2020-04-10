@@ -1,0 +1,879 @@
+---
+title: "Tidybiology +DS: Session 1 "
+subtitle: "Introduction to Data Science in Health Care using R"
+author: "Matthew Hirschey, Ph.D."
+date: "April 8-9, 2020"
+output: 
+  ioslides_presentation:
+    widescreen: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(knitr)
+library(here)
+library(twitterwidget)
+library(rlang)
+knitr::opts_chunk$set(echo = FALSE, 
+                      fig.align="center")
+source(here::here("code", "healthcare.R")) #loads dataset-specific variables
+source(here::here("code", "bespoke.R")) #loads custom objects
+```
+
+## Doctors make decisions based on symptoms 
+```{r intro, echo=FALSE, fig.cap="", out.height = '100%'}
+url <- "https://source.unsplash.com/701-FJcjLAQ/500x500"
+knitr::include_graphics(url)
+```
+<font size = "1">Photo by [National Cancer Institute on Unsplash](https://unsplash.com/@nci)</font>
+
+## New digital healthcare era introduces new decision-making challenges {.build}
+**Volume**  
+- Data collection & storage allows access to huge amounts of medical information  
+  
+**Ubiquity**  
+- Data are available anywhere across geography, social, and economic classes   
+  
+**Latency**  
+- Technology facilitates no delay in access to data    
+  
+## How do you make better health care decisions? {.build}
+**Data-driven** decision making!  
+  
+```{r hierarchy, echo=FALSE, fig.cap="", out.height = '100%'}
+url <- "https://upload.wikimedia.org/wikipedia/commons/0/06/DIKW_Pyramid.svg"
+knitr::include_graphics(url)
+```
+<font size = "1">https://en.wikipedia.org/wiki/DIKW_pyramid</font>
+  
+## Emerging field of Data Science
+```{r venn1, echo=FALSE, fig.cap="", out.height= '100%'}
+url <- "https://images.squarespace-cdn.com/content/v1/5150aec6e4b0e340ec52710a/1364352051365-HZAS3CLBF7ABLE3F5OBY/ke17ZwdGBToddI8pDm48kB2M2-8_3EzuSSXvzQBRsa1Zw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpxPe_8B-x4gq2tfVez1FwLYYZXud0o-3jV-FAs7tmkMHY-a7GzQZKbHRGZboWC-fOc/Data_Science_VD.png?format=1500w"
+knitr::include_graphics(url)
+```
+<font size = "1">http://drewconway.com/zia/2013/3/26/the-data-science-venn-diagram</font>
+
+## Venn Diagram of Data Science v2.0
+```{r venn2, echo=FALSE, fig.cap="", out.height= '100%'}
+url <- "https://3.bp.blogspot.com/-bvQxcwfqATQ/V-E_uTBc4VI/AAAAAAAAMGQ/Qa1Ntef-rs0E-mWx5pkVu-CPlREdvD0TwCLcB/s1600/VennDiagram2.png"
+knitr::include_graphics(url)
+```
+<font size = "1">Joel Grus via KDnuggets</font>
+
+## Overall goal is Knowledge Generation
+```{r knowledge, echo=FALSE, fig.cap="", out.height = '100%'}
+url <- "https://upload.wikimedia.org/wikipedia/commons/0/06/DIKW_Pyramid.svg"
+knitr::include_graphics(url)
+```
+<font size = "1">https://en.wikipedia.org/wiki/DIKW_pyramid</font>
+
+## Several Approaches to Knowledge Generation {.build}
+- New tools allow data interrogation more easily than ever before 
+
+```{r approaches, echo=FALSE}
+tweet <- twitterwidget('1125268670324695041')
+```
+<center>`r tweet`</center>
+
+## World's most popular programming languages
+```{r popular, echo = FALSE}
+excel <- tibble(
+  name = c("Excel", "Java", "C", "C++", "Python"), 
+  num = c(100000000, 9000000, 6000000, 4000000, 3000000)
+)
+excel_plot <- ggplot(excel) +
+  geom_col(aes(x = fct_rev(fct_reorder(name, num)), y = num), fill = "navy") +
+  labs(x = "", y = "Number of Users (Million)") +
+  scale_y_continuous(labels = c("0", "25", "50", "75", "100")) +
+  theme_minimal()
+excel_plot
+#need to add source
+```
+
+# R <br> language
+Any questions?
+
+## R is a language
+```{r language, echo=FALSE, fig.cap=""}
+url <- "https://source.unsplash.com/ZzWsHbu2y80/256x455"
+knitr::include_graphics(url)
+```
+<font size = "1">Photo by Hannah Wright on Unsplash</font>
+
+## R has values
+- 1
+- "North Carolina"
+- "2020-04-08"
+
+## R has objects
+- A name without quotes  
+- Assigned using `<-` (looks like an arrow pointing left)  
+- Can be a value, object, or function result  
+
+## Try assigning an object 
+1. Assign an object; **remember, no quotes on name**  
+`name <- 4`  
+  
+2. Return that object by typing its name  
+`name`  
+  
+Try this in the code chunk below, then hit "Run Code"  
+
+```{r my_first_object, exercise=TRUE}
+
+```
+
+## R has functions
+- A name without quotes  
+- Followed by () to run the function  
+- Optional arguements: values, objects, or function results  
+- `round(x, digits = 3)`
+
+Try this in the code chunk below, then hit "Run Code"  
+
+```{r my_first_fun, exercise=TRUE}
+round(pi, digits = 3)
+
+```
+
+## Which of these are numbers?
+
+```{r num_quiz, echo=FALSE}
+question("Which of these are numbers?",
+  answer("1", correct = TRUE),
+  answer('"1"', message = "Because it has quotes, it is an string"),
+  answer('"one"', message = "Because it has quotes, it is an string"),
+  answer("one",  message = "R recognizes this as an object"), 
+  allow_retry = TRUE, 
+  random_answer_order = TRUE
+)
+```
+
+## Which of these will work?
+Suppose `one <- 1`
+```{r one_quiz, echo=FALSE}
+question("Which of these will work?",
+  answer("log(1)", correct = TRUE),
+  answer('log("1")', message = "You cannot log transform a word (string)"),
+  answer('log("one")', message = "You cannot log transform a word (string)"),
+  answer("log(one)", correct = TRUE), 
+  allow_retry = TRUE, 
+  random_answer_order = TRUE
+)
+```
+Try it for yourself!  
+  
+```{r scratchpad, exercise=TRUE}
+one <- 1
+```
+
+## Data are stored in tables and dataframes
+Data stored in a dataframe are conceptually equivalent to a spreadsheet with rows and columns  
+  
+This is a sample from the ``r dataframe_name`` dataset  
+  
+```{r kable}
+df_input %>% 
+  select(1:5) %>% 
+  slice(1:5) %>% 
+  knitr::kable()
+```
+
+## Data are stored in tables and dataframes
+Data stored in a dataframe are conceptually equivalent to a spreadsheet with rows and columns  
+  
+This is a sample from the ``r dataframe_name`` dataset  
+  
+```{r tibble}
+df_input %>% 
+  select(1:5) %>% 
+  slice(1:5) %>% 
+  print(as_tibble())
+```
+
+## Extract or create new objects
+```{r extract_setup, include=FALSE}
+col <- sample(colnames(df_input), 1)
+```
+
+You can call a single part of the data frame  
+  
+`r dataframe_name`$`r col`
+
+```{r extract, echo = FALSE, warning = FALSE}
+df_input %>% 
+  select(!!col)
+```
+
+## Extract or create new objects 
+  
+Write the R code required to extract a variable from the `r dataframe_name` dataset:  
+  
+Remember, the format is: `r dataframe_name`$`r col`  
+  
+```{r extract_exercise, exercise=TRUE}
+
+```
+
+## Extract or create new objects 
+  
+You can also save a part of the dataframe as an object for later use  
+  
+``r col` <- `r dataframe_name`$`r col``  
+  
+In the code chunk below:  
+1. On the first line, write the R code to save a single column to a new object   
+2. On the second line, type the object name - this will print out the new object  
+3. Run the code  
+  
+```{r create_exercise, exercise=TRUE}
+
+```
+
+# R <br>Integrated Development Environment
+Any questions?
+
+## R
+Statistical Programming Language
+```{r r_exercise, exercise=TRUE}
+
+```
+  
+```{r r_image, echo=FALSE, fig.cap="", out.height = '100%'}
+url <- "https://source.unsplash.com/Vb8pR6cKCRI/300×200"
+knitr::include_graphics(url)
+```
+<font size = "1">Photo by [Photo by Evan Hein on Unsplash](https://unsplash.com/@evanheinphoto)</font>
+
+## Rstudio
+Integrated Development Environment
+
+```{r r_de, echo=FALSE, fig.cap="", out.height = '100%'}
+url <- "https://source.unsplash.com/XuDPnpox8tc/300×200"
+knitr::include_graphics(url)
+```
+<font size = "1">[Photo by Jaromír Kavan on Unsplash](https://unsplash.com/@jerrykavan)</font>
+
+---
+[Open Rstudio](http://www.rstudio.cloud)  
+<iframe src="http://www.rstudio.cloud"></iframe>
+
+## Rstudio Demonstration
+Go to code/  
+Open 01_r_demo.Rmd  
+Follow along.  
+
+# R <br>Markdown
+Any questions?
+
+## R Markdown Introduction
+Go to code/  
+Open 02_rmd_exercise.Rmd  
+Read through the file and do everything it tells you to do.  
+
+## R Markdown
+An authoring format for Data Science.  
+```{r markdown, echo=FALSE, fig.cap="", out.width='66%'}
+url <- "https://github.com/matthewhirschey/tidybiology-plusds/raw/master/media/markdown.png"
+knitr::include_graphics(url)
+```
+
+# R <br>Packages
+Any questions?
+
+## R Packages
+The R language contains thousands of functions, data sets, and help pages.  
+- but only a few hundred are included when you download R  
+  
+**This is called 'Base R'**  
+  
+The other functions, data sets, and help pages are grouped into collections known as packages that you can choose to download or not download.  
+
+## “Verbs” (i.e. functions) act on data
+
+`do_this(to_that)`  
+  
+`do_this(to_that, using_these)`  
+   
+*We talked about functions before (e.g. `round(pi, 3)`)*  
+  
+  
+  
+  
+**Functions are the power of using R**
+
+## Packages contain functions, documentation, data
+  
+<center><iframe src="https://dplyr.tidyverse.org"></iframe></center>
+
+## CRAN
+- Most R packages are stored on CRAN, alongside R.  
+- Think of them as optional extensions of the R language.  
+  
+```{r cran, echo=FALSE, fig.cap="", out.height = '66%', out.width= '66%'}
+url <- "https://gist.githubusercontent.com/daroczig/3cf06d6db4be2bbe3368/raw/b66b0531fb1b86d3e04a003b2e105ad4f147900e/number-of-submitted-packages-to-CRAN.png"
+knitr::include_graphics(url)
+```
+<font size = "1">Image by [daroczig](https://gist.github.com/daroczig/3cf06d6db4be2bbe3368)</font>
+  
+## Using Packages (Part I)
+  
+1. `install.packages("tidyverse")`  
+  
+Do this 1 time per computer.  
+  
+This command will install the package into your instance of R, whether it is local, on a server, or in the cloud. This is required to use the functions in a package.  
+  
+## Tidyverse
+  
+<center><iframe src="https://www.tidyverse.org"></iframe></center>
+
+## Tidyverse Pop Quiz!
+
+The tidyverse contains the following packages (ggplot2, dplyr, tidyr, readr, purrr, tibble, hms, stringr, lubridate, forcats, DBI, haven, httr, jsonlite, readxl, rvest, xml2, modelr, tidyverse).   
+  
+  
+  
+  
+**How would you  install them?**
+
+## Tidyverse Pop Quiz! {.build}
+`install.packages("ggplot2")`
+`install.packages("dplyr")`
+`install.packages("tidyr")`
+`install.packages("readr")`
+`install.packages("purrr")`
+`install.packages("tibble")`
+`install.packages("hms")`
+`install.packages("stringr")`
+`install.packages("lubridate")`
+`install.packages("forcats")`
+`install.packages("DBI")`
+`install.packages("haven")`
+`install.packages("httr")`
+`install.packages("jsonlite")`
+`install.packages("readxl")`
+`install.packages("rvest")`
+`install.packages("xml2")`
+`install.packages("modelr")`
+`install.packages("broom")`  
+  
+  
+  
+Better:  
+`install.packages("tidyverse")`  
+An R package that serves as a short cut for installing and loading the components of the tidyverse.
+
+## Using Packages (Part II)
+  
+1.`install.packages("tidyverse")`  
+  
+Do this 1 time per *computer*.  
+  
+  
+2.`library(tidyverse)`  
+  
+Do this 1 time per *session*  
+  
+## Using Packages (Part II) {.build}
+**Downloading a package isn't the same as using it.**  
+  
+If you'd like to use an R package, you need to tell R.  
+You do that by running the command `library`, again followed by parentheses and the package name.  
+  
+`library(package_name)`  
+  
+This command loads all of the  functions, data sets, and help pages that come with the package into your R session, where you can use them.  
+  
+*If you close R, you'll need to reload the package with library() if you want to use it again.*  
+  
+  
+## Using Packages (Part III)
+The setup chunk is always run once before anything else  
+
+```{r setup_chunk, echo=FALSE, fig.cap="", out.width='66%'}
+url <- "https://github.com/matthewhirschey/tidybiology-plusds/raw/master/media/setup.png"
+knitr::include_graphics(url)
+```
+
+## Set-up Chunk Exercise
+Add a setup chunk (as shown below) to the top of `02_rmd_exercise.Rmd`.  
+Use it to load the tidyverse package (*remember to run this chunk*)  
+Then uncomment and run the final code chunk at the bottom of your file.  
+  
+```{r setup_chunk2, echo=FALSE, fig.cap="", out.width='66%'}
+url <- "https://github.com/matthewhirschey/tidybiology-plusds/raw/master/media/setup2.png"
+knitr::include_graphics(url)
+```
+
+## Tidyverse 
+Tidyverse is one suite of tools for data science  
+  
+<center><iframe src="https://www.tidyverse.org"></iframe></center>
+
+## Exploratory Data Analysis
+```{r r4ds, echo=FALSE, fig.cap="", out.width='66%'}
+url <- "https://github.com/hadley/r4ds/raw/master/diagrams/data-science.png"
+knitr::include_graphics(url)
+```
+
+## Tidyverse Basic Principles
+**IMPORT** (readr):  
+- `read_csv()`  
+- `read_delim()`  
+  
+**TIDY & TRANSFORM** (dplyr):  
+- `mutate()` adds new variables that are functions of existing variables  
+- `select()` picks variables based on their names.  
+- `filter()` picks cases based on their values.  
+- `summarise()` reduces multiple values down to a single summary.  
+- `arrange()` changes the ordering of the rows.  
+  
+**VISUALISE** (ggplot): creating graphics, based on ‘The Grammar of Graphics’  
+- `aes()`  
+- `geom_x()` + layers   
+  
+**MODEL** (broom):   
+- `tidy()`, `glance()`, `augment()`  
+
+----
+```{r pipe, echo=FALSE, fig.cap="", out.width='77%'}
+url <- "https://s3-us-west-2.amazonaws.com/collections.lacma.org-images/remote_images/ma-150089-WEB.jpg"
+knitr::include_graphics(url)
+```
+
+## `magrittr` package
+```{r magrittr, echo=FALSE, fig.cap="", out.width='40%'}
+url <- "https://github.com/tidyverse/magrittr/raw/master/man/figures/logo.png"
+knitr::include_graphics(url)
+```
+
+## `magrittr` package
+`magrittr` package by Stefan Milton Bache developed the concept of the pipe, which is used heavily in the `tidyverse`  
+  
+  
+```{r magrittr2, echo=FALSE, fig.cap="", out.width='40%'}
+url <- "https://github.com/tidyverse/magrittr/raw/master/vignettes/magrittr.jpg"
+knitr::include_graphics(url)
+```
+<br>  
+<center><font size = "10">"and then"</font></center>
+
+## The Pipe {.build}
+  The “pipe” is a sequence of functions, that are sequentially applied to an object  
+```{r wakeup, echo=TRUE, eval=FALSE}
+wakeup(self) %>%
+  put_on("clothes") %>%
+  eat("breakfast") %>%
+  go(to = "work")
+```
+  
+  Alternative nested code:  
+```{r wakeup_nested, echo=TRUE, eval=FALSE}
+go(eat(put_on(wakeup(self), "clothes"), "breakfast"), to = "work")
+```
+
+## The Pipe (Quiz I)
+What does this code do? 
+  
+```{r wakeup_quiz, echo=TRUE, eval=FALSE}
+wakeup(self) %>%
+  put_on("clothes") %>%
+  eat("breakfast") %>%
+  fmk() %>% 
+  go(to = "work")
+```
+  
+## The Pipe (Quiz II)
+What does this code do? 
+  
+```{r wakeup_quiz2, echo=TRUE, eval=FALSE}
+morning_routine <- wakeup(self) %>%
+  put_on("clothes") %>%
+  eat("breakfast") %>%
+  fmk() %>% 
+  go(to = "work")
+```
+
+## The Pipe (Quiz III)
+What does this code do? 
+
+``r dataframe_name` %>%`  
+`select(`r colnames(df_input)[2]`, `r colnames(df_input)[3]`) %>%`  
+`group_by(`r colnames(df_input)[3]`) %>%`  
+`summarize(mean(`r colnames(df_input)[2]`))`  
+  
+Try it out here!
+```{r pipe_ex, exercise=TRUE}
+
+```
+
+## Writing code IS NOT like drawing an owl
+```{r owl, echo=FALSE, fig.cap="", out.width='50%'}
+url <- "https://66.media.tumblr.com/tumblr_l7iwzq98rU1qa1c9eo1_500.jpg"
+knitr::include_graphics(url)
+```
+
+## Writing code IS a step-wise process
+```{r lego, echo=FALSE, fig.cap="", out.width='70%'}
+url <- "https://github.com/rstudio-education/datascience-box/raw/master/slides/u1_d01-meet-the-toolkit/img/lego-steps.png"
+knitr::include_graphics(url)
+```
+<font size = "1">https://datasciencebox.org</font>
+
+# R <br>Getting to know your data
+Any questions?
+
+## ``r dataframe_name`` dataset
+**`r dataframe_title`**  
+  
+- For this class, we will use a dataset called ``r dataframe_name``.  
+  
+- `r dataframe_source`  
+  
+- `r dataframe_desc`  
+  
+## Inspecting your dataframe: dimensions
+
+Use the `dim()` function to see how many rows (observations) and columns (variables) are in ``r dataframe_name``
+
+`dim(`r dataframe_name`)` 
+  
+Enter your function here:  
+```{r dim_exercise, exercise=TRUE}
+
+```
+
+## Inspecting your dataframe: glimpse
+
+Use the `glimpse()` function to see what kinds of variables the ``r dataframe_name`` dataset contains   
+  
+`glimpse(`r dataframe_name`)`  
+  
+Enter your function here:  
+```{r glimpse_exercise, exercise=TRUE}
+
+```
+  
+## Basic Data Types in R {.build}
+
+Recall that R has different data types -
+
+**character** - `"a"`, `"tidyverse"`  
+
+**numeric** - `2`, `11.5`  
+
+**integer** - `2L` (the `L` tells R to store this as an integer)  
+
+**logical** - `TRUE`, `FALSE`  
+
+**complex** - `1+4i`  
+
+(**raw**)
+
+You will also come across the **double** datatype. It is the same as **numeric**
+
+**factor**. A **factor** is a collection of *ordered* character variables
+
+## Basic Data Types in R
+
+In addition to the `glimpse()` function, you can use the `class()` function to determine the data type of a specific column
+
+`class(`r dataframe_name`$`r colnames(df_character_select)`)`
+
+```{r class, echo = FALSE, warning = FALSE}
+class(df_character_select[[1]])
+```
+  
+Try getting the `class` of a variable:  
+```{r class_exercise, exercise=TRUE}
+
+```
+
+## (Re)Introducing `%>%` {.build}
+
+The `%>%` operator is a way of "chaining" together strings of commands that make reading your code easy.  
+The following code chunk illustrates how `%>%` works:  
+  
+``r dataframe_name` %>%`  
+    `select(`r colnames(df_character_select)`, `r colnames(df_numeric_select)`) %>%`   
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`") %>%`   
+    `head()`  
+
+```{r %>%, echo = FALSE, warning = FALSE}
+df_input %>%
+  select(colnames(df_character_select), colnames(df_numeric_select)) %>% 
+  filter(!!rlang::sym(colnames(df_character_select)) == as.character(df_character_filter)) %>% 
+  head()
+```
+
+## (Re)Introducing `%>%` {.build}
+
+The previous code chunk does the following - it takes your dataset and then "pipes" it into `select()`, and then applies a `filter()` to the data.
+  
+``r dataframe_name` %>%`  
+    `select(`r colnames(df_character_select)`, `r colnames(df_numeric_select)`) %>%`   
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`") %>%`   
+    `head()`  
+  
+*the `head` function lists only the top n results -- convenient for long variables*
+  
+  
+**When you see `%>%`, think "and then"**
+
+## (Re)Introducing `%>%` {.build}
+
+The alternative to using `%>%` is running the following code
+
+filter(select(`r dataframe_name`, `r colnames(df_character_select)`, `r colnames(df_numeric_select)`), `r colnames(df_character_select)` == "`r df_character_filter`")
+
+Although this is only one line as opposed to three, it's both more difficult to write and more difficult to read
+
+# R <br>Manipulating your data
+Any questions?
+
+## Introducing `dplyr` {.build}
+  
+dplyr is a package that contains a suite of functions that allow you to easily manipulate a dataset  
+  
+Some of the things you can do are -  
+  
+- select rows and columns that match specific criteria  
+  
+- create new variables (columns)  
+  
+- obtain summary statistics on individual groups within your datsets  
+  
+The main verbs we will cover are `select()`, `filter()`, `arrange()`, `mutate()`, and `summarise()`. These all combine naturally with `group_by()` which allows you to perform any operation "by group"
+
+## `select()` specific columns from your dataset {.build}
+The most basic `select()` is one where you comma separate a list of columns you want included
+
+For example, if you only want to select the `r colnames(df_character_select)` and `r colnames(df_numeric_select)` columns, run the following code chunk
+
+``r dataframe_name` %>%`   
+    `select(`r colnames(df_character_select)`, `r colnames(df_numeric_select)`) %>%`  
+    `head()`
+    
+```{r select_exercise, exercise=TRUE}
+
+```
+
+## `select()` {.build}
+
+If you want to select all columns *except* `r colnames(df_character_select)`, run the following
+
+``r dataframe_name` %>%`  
+    `select(-`r colnames(df_character_select)`) %>%`  
+    `head(5)`
+
+```{r selectnot_exercise, exercise=TRUE}
+
+```
+
+## `select()` {.build}
+
+Finally, you can provide a range of columns to return two columns and everything in between. For example
+
+``r dataframe_name` %>%`   
+    `select(`r colnames(df_character_select)`:`r colnames(df_numeric_select)`) %>%`  
+    `head(5)`
+    
+```{r selectrange_exercise, exercise=TRUE}
+
+```
+
+## `filter()` rows based on certain condition(s) {.build}
+
+The `filter()` verb evalutes a logical statement, and if a row meets the condition of this statement (i.e. is true) then it gets chosen (or "filtered").  
+  
+  
+**All other rows are discarded**  
+
+## `filter()` {.build}
+
+Filtering can be performed on **categorical** data
+
+``r dataframe_name` %>%`     
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`") %>%`     
+    `head(3)`  
+
+```{r filter_exercise, exercise=TRUE}
+
+```
+
+Note that `filter()` only applies to rows, and has no effect on columns
+
+## `filter()` {.build}
+
+Filtering can also be performed on **numeric** data
+
+For example, if you wanted to choose `r colnames(df_numeric_select)` with a value greater than `r df_numeric_filter`, you would run the following. 
+
+``r dataframe_name` %>%`     
+    `filter(`r colnames(df_numeric_select)` > `r df_numeric_filter`) %>%`     
+    `head(3)`  
+
+```{r filter_exercise2, exercise=TRUE}
+
+```
+
+## `filter()` {.build}
+
+To filter on multiple conditions, you can write a sequence of `filter()` commands
+
+``r dataframe_name` %>%`       
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`") %>%`  
+    `filter(`r colnames(df_numeric_select)` > `r df_numeric_filter`) %>%`    
+    `head(3)`  
+
+```{r filter_exercise3, exercise=TRUE}
+
+```
+
+## `filter()` {.build}
+
+To avoid writing multiple `filter()` commands, multiple logical statements can be put inside a single `filter()` command, separated by commas
+
+``r dataframe_name` %>%`           
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`",`  
+           ` `r colnames(df_numeric_select)` > `r df_numeric_filter`) %>%`      
+    `head(3)`  
+
+```{r filter_exercise4, exercise=TRUE}
+
+```
+
+## `arrange()` sorts rows {.build}
+
+The input for arrange is one or many columns, and `arrange()` sorts the rows in ascending order i.e. from smallest to largest
+
+For example, to sort rows from smallest to largest `r colnames(df_numeric_select)`, run the following
+
+``r dataframe_name` %>%`   
+  `arrange(`r colnames(df_numeric_select)`) %>%`   
+  `head(3)`  
+
+```{r arrange_exercise, exercise=TRUE}
+
+```
+
+## `arrange()` {.build}
+
+To reverse this order, use the `desc()` function within `arrange()`
+
+``r dataframe_name` %>%`  
+  `arrange(desc(`r colnames(df_numeric_select)`)) %>%`  
+  `head(3)`  
+
+```{r arrange_exercise2, exercise=TRUE}
+
+```
+
+
+## `mutate()` {.build}
+
+The `mutate()` verb, unlike the ones covered so far, creates new variable(s) i.e. new column(s). For example
+
+``r dataframe_name` %>%`    
+  `mutate(new_col = sqrt(`r colnames(df_numeric_select)`)) %>%`    
+  `head(1)`  
+  
+The code chunk above takes all the elements of the column `r colnames(df_numeric_select)`, evaluates the square root of each element, and populates a new column called `new_col` with these results
+  
+## Try `mutate()` to make a new column
+  
+``r dataframe_name` %>%`    
+  `mutate(new_col = sqrt(`r colnames(df_numeric_select)`)) %>%`    
+  `head(3)`  
+  
+```{r mutate_exercise, exercise=TRUE}
+
+```
+
+
+## `summarise()` and `summarize()` {.build}
+
+`summarize()` is one of the key functions in `dplyr`. It produces a new dataframe that aggregates that values of a column based on a certain condition.  
+  
+For example, to calculate the mean `r colnames(df_numeric_select)`, run the following
+
+``r dataframe_name` %>%`      
+  `summarise(mean(`r colnames(df_numeric_select)`))` 
+
+```{r summarize_exercise, exercise=TRUE}
+
+```
+
+## `group_by()` {.build}
+
+`group_by()` and `summarize()` are a powerful combination of functions to summarize by groups  
+  
+``r dataframe_name` %>%`  
+  `group_by(`r colnames(df_character_select)`) %>%`  
+  `summarise(mean(`r colnames(df_numeric_select)`))`  
+  
+```{r groupby_exercise, exercise=TRUE}
+
+```
+  
+*remember this pair!  
+
+## Saving a new dataset as an object
+
+If you'd like to save the output of your wrangling as an object, you will need to use the `<-` operator
+
+``r dataframe_name`_new <- `r dataframe_name` %>%`  
+            `group_by(`r colnames(df_character_select)`) %>%`  
+            `summarise(mean(`r colnames(df_numeric_select)`))`  
+  
+*Assigning the object the same name (i.e. ``r dataframe_name``) will overwrite the object  
+  
+```{r df_object_exercise, exercise=TRUE}
+
+```
+  
+## Saving a new dataset as a file
+
+To save ``r dataframe_name`_new` as a new file (e.g. csv), run the following:  
+  
+`write_csv(`r dataframe_name`_new, "`r dataframe_name`_new.csv")`
+  
+  
+# R <br>Data Science Workflow
+Any questions?
+
+## Visualizing our dataset
+  
+Go to code/  
+Open 03_rmd_practice.Rmd  
+Complete the activity.
+  
+# R <br>Help
+Any questions?
+
+## Resources
+- Rstudio package 'cheatsheets'  
+- Package function help pages: `?mean`, or navigate to the Help tab and search there  
+- Run the following to access the Dplyr vignette: `browseVignettes("dplyr")`  
+- Stackoverflow: [https://stackoverflow.com](https://stackoverflow.com)
+- R for Data Science, by Grolemund & Wickham [https://r4ds.had.co.nz/index.html](https://r4ds.had.co.nz/index.html)  
+
+## Acknowledgements {.build}
+**Teaching Assistants**  
+- Allie Mills, Ph.D.  
+- Akshay Bareja, D.Phil.  
+  
+**Inspiration, ideas, packages, code**  
+- R4DS (Garrett Grolemund and Hadley Wickham)  
+- Mine Çetinkaya-Rundel (datasciencebox.org)  
+- Chester Ismay and Albert Y. Kim (Modern Dive)  
+- Garrett Grolemund  (Remastering the Tidyverse)  
+- Tidyverse devs and community  
+- Rstudio  
+
+# Thank you
+Any questions?
+
