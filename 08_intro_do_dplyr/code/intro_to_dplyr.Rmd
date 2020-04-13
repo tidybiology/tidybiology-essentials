@@ -1,0 +1,277 @@
+---
+title: "Getting to know your data"
+output: 
+  ioslides_presentation:
+    widescreen: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(knitr)
+library(here)
+library(rlang)
+knitr::opts_chunk$set(echo = FALSE, 
+                      fig.align="center")
+source(here::here("code", "bespoke.R")) #loads custom objects
+```
+
+## (Re)Introducing `%>%` {.build}
+
+The `%>%` operator is a way of "chaining" together strings of commands that make reading your code easy.  
+The following code chunk illustrates how `%>%` works:  
+  
+``r dataframe_name` %>%`  
+    `select(`r colnames(df_character_select)`, `r colnames(df_numeric_select)`) %>%`   
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`") %>%`   
+    `head()`  
+
+```{r %>%, echo = FALSE, warning = FALSE}
+df_input %>%
+  select(colnames(df_character_select), colnames(df_numeric_select)) %>% 
+  filter(!!rlang::sym(colnames(df_character_select)) == as.character(df_character_filter)) %>% 
+  head()
+```
+
+## (Re)Introducing `%>%` {.build}
+
+The previous code chunk does the following - it takes your dataset and then "pipes" it into `select()`, and then applies a `filter()` to the data.
+  
+``r dataframe_name` %>%`  
+    `select(`r colnames(df_character_select)`, `r colnames(df_numeric_select)`) %>%`   
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`") %>%`   
+    `head()`  
+  
+*the `head` function lists only the top n results -- convenient for long variables*
+  
+  
+**When you see `%>%`, think "and then"**
+
+## (Re)Introducing `%>%` {.build}
+
+The alternative to using `%>%` is running the following code
+
+filter(select(`r dataframe_name`, `r colnames(df_character_select)`, `r colnames(df_numeric_select)`), `r colnames(df_character_select)` == "`r df_character_filter`")
+
+Although this is only one line as opposed to three, it's both more difficult to write and more difficult to read
+
+# R <br>Manipulating your data
+Any questions?
+
+## Introducing `dplyr` {.build}
+  
+dplyr is a package that contains a suite of functions that allow you to easily manipulate a dataset  
+  
+Some of the things you can do are -  
+  
+- select rows and columns that match specific criteria  
+  
+- create new variables (columns)  
+  
+- obtain summary statistics on individual groups within your datsets  
+  
+The main verbs we will cover are `select()`, `filter()`, `arrange()`, `mutate()`, and `summarise()`. These all combine naturally with `group_by()` which allows you to perform any operation "by group"
+
+## `select()` specific columns from your dataset {.build}
+The most basic `select()` is one where you comma separate a list of columns you want included
+
+For example, if you only want to select the `r colnames(df_character_select)` and `r colnames(df_numeric_select)` columns, run the following code chunk
+
+``r dataframe_name` %>%`   
+    `select(`r colnames(df_character_select)`, `r colnames(df_numeric_select)`) %>%`  
+    `head()`
+    
+```{r select_exercise, exercise=TRUE}
+
+```
+
+## `select()` {.build}
+
+If you want to select all columns *except* `r colnames(df_character_select)`, run the following
+
+``r dataframe_name` %>%`  
+    `select(-`r colnames(df_character_select)`) %>%`  
+    `head(5)`
+
+```{r selectnot_exercise, exercise=TRUE}
+
+```
+
+## `select()` {.build}
+
+Finally, you can provide a range of columns to return two columns and everything in between. For example
+
+``r dataframe_name` %>%`   
+    `select(`r colnames(df_character_select)`:`r colnames(df_numeric_select)`) %>%`  
+    `head(5)`
+    
+```{r selectrange_exercise, exercise=TRUE}
+
+```
+
+## `filter()` rows based on certain condition(s) {.build}
+
+The `filter()` verb evalutes a logical statement, and if a row meets the condition of this statement (i.e. is true) then it gets chosen (or "filtered").  
+  
+  
+**All other rows are discarded**  
+
+## `filter()` {.build}
+
+Filtering can be performed on **categorical** data
+
+``r dataframe_name` %>%`     
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`") %>%`     
+    `head(3)`  
+
+```{r filter_exercise, exercise=TRUE}
+
+```
+
+Note that `filter()` only applies to rows, and has no effect on columns
+
+## `filter()` {.build}
+
+Filtering can also be performed on **numeric** data
+
+For example, if you wanted to choose `r colnames(df_numeric_select)` with a value greater than `r df_numeric_filter`, you would run the following. 
+
+``r dataframe_name` %>%`     
+    `filter(`r colnames(df_numeric_select)` > `r df_numeric_filter`) %>%`     
+    `head(3)`  
+
+```{r filter_exercise2, exercise=TRUE}
+
+```
+
+## `filter()` {.build}
+
+To filter on multiple conditions, you can write a sequence of `filter()` commands
+
+``r dataframe_name` %>%`       
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`") %>%`  
+    `filter(`r colnames(df_numeric_select)` > `r df_numeric_filter`) %>%`    
+    `head(3)`  
+
+```{r filter_exercise3, exercise=TRUE}
+
+```
+
+## `filter()` {.build}
+
+To avoid writing multiple `filter()` commands, multiple logical statements can be put inside a single `filter()` command, separated by commas
+
+``r dataframe_name` %>%`           
+    `filter(`r colnames(df_character_select)` == "`r df_character_filter`",`  
+           ` `r colnames(df_numeric_select)` > `r df_numeric_filter`) %>%`      
+    `head(3)`  
+
+```{r filter_exercise4, exercise=TRUE}
+
+```
+
+## `arrange()` sorts rows {.build}
+
+The input for arrange is one or many columns, and `arrange()` sorts the rows in ascending order i.e. from smallest to largest
+
+For example, to sort rows from smallest to largest `r colnames(df_numeric_select)`, run the following
+
+``r dataframe_name` %>%`   
+  `arrange(`r colnames(df_numeric_select)`) %>%`   
+  `head(3)`  
+
+```{r arrange_exercise, exercise=TRUE}
+
+```
+
+## `arrange()` {.build}
+
+To reverse this order, use the `desc()` function within `arrange()`
+
+``r dataframe_name` %>%`  
+  `arrange(desc(`r colnames(df_numeric_select)`)) %>%`  
+  `head(3)`  
+
+```{r arrange_exercise2, exercise=TRUE}
+
+```
+
+
+## `mutate()` {.build}
+
+The `mutate()` verb, unlike the ones covered so far, creates new variable(s) i.e. new column(s). For example
+
+``r dataframe_name` %>%`    
+  `mutate(new_col = sqrt(`r colnames(df_numeric_select)`)) %>%`    
+  `head(1)`  
+  
+The code chunk above takes all the elements of the column `r colnames(df_numeric_select)`, evaluates the square root of each element, and populates a new column called `new_col` with these results
+  
+## Try `mutate()` to make a new column
+  
+``r dataframe_name` %>%`    
+  `mutate(new_col = sqrt(`r colnames(df_numeric_select)`)) %>%`    
+  `head(3)`  
+  
+```{r mutate_exercise, exercise=TRUE}
+
+```
+
+
+## `summarise()` and `summarize()` {.build}
+
+`summarize()` is one of the key functions in `dplyr`. It produces a new dataframe that aggregates that values of a column based on a certain condition.  
+  
+For example, to calculate the mean `r colnames(df_numeric_select)`, run the following
+
+``r dataframe_name` %>%`      
+  `summarise(mean(`r colnames(df_numeric_select)`))` 
+
+```{r summarize_exercise, exercise=TRUE}
+
+```
+
+## `group_by()` {.build}
+
+`group_by()` and `summarize()` are a powerful combination of functions to summarize by groups  
+  
+``r dataframe_name` %>%`  
+  `group_by(`r colnames(df_character_select)`) %>%`  
+  `summarise(mean(`r colnames(df_numeric_select)`))`  
+  
+```{r groupby_exercise, exercise=TRUE}
+
+```
+  
+*remember this pair!  
+
+## Saving a new dataset as an object
+
+If you'd like to save the output of your wrangling as an object, you will need to use the `<-` operator
+
+``r dataframe_name`_new <- `r dataframe_name` %>%`  
+            `group_by(`r colnames(df_character_select)`) %>%`  
+            `summarise(mean(`r colnames(df_numeric_select)`))`  
+  
+*Assigning the object the same name (i.e. ``r dataframe_name``) will overwrite the object  
+  
+```{r df_object_exercise, exercise=TRUE}
+
+```
+  
+## Saving a new dataset as a file
+
+To save ``r dataframe_name`_new` as a new file (e.g. csv), run the following:  
+  
+`write_csv(`r dataframe_name`_new, "`r dataframe_name`_new.csv")`
+  
+  
+# R <br>Data Science Workflow
+Any questions?
+
+## Visualizing our dataset
+  
+Go to code/  
+Open 03_rmd_practice.Rmd  
+Complete the activity.
