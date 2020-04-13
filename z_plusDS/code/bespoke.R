@@ -1,4 +1,8 @@
 set.seed(42)
+library(tidyverse)
+
+#load dataset for for class
+source(here::here("code", "healthcare.R")) #loads dataset-specific variables
 
 #make dataframes
 df_input <- data # df MUST contain at least one character and one numeric variable

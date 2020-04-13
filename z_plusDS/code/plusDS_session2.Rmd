@@ -20,7 +20,6 @@ library(patchwork)
 library(ggrepel)
 knitr::opts_chunk$set(echo = FALSE, 
                       fig.align="center")
-source(here::here("code", "healthcare.R")) #loads dataset-specific variables
 source(here::here("code", "bespoke.R")) #loads custom objects
 ```
 
