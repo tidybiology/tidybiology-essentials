@@ -6,3 +6,5 @@
 /admin
 *.Rproj
 *.html
+**/.DS_Store
+.DS_Store
