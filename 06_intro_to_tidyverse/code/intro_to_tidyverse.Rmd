@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Rstudio"
+title: "Introduction to Tidyverse"
 output: 
   ioslides_presentation:
     widescreen: true
