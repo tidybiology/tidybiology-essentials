@@ -1,5 +1,4 @@
 ---
-title: "Introduction to Data Science"
 output: 
   ioslides_presentation:
     widescreen: true
@@ -18,32 +17,6 @@ knitr::opts_chunk$set(echo = FALSE,
 source(here::here("code", "bespoke.R")) #loads custom objects
 ```
 
-## Doctors make decisions based on symptoms 
-```{r intro, echo=FALSE, fig.cap="", out.height = '100%'}
-url <- "https://source.unsplash.com/701-FJcjLAQ/500x500"
-knitr::include_graphics(url)
-```
-<font size = "1">Photo by [National Cancer Institute on Unsplash](https://unsplash.com/@nci)</font>
-
-## New digital healthcare era introduces new decision-making challenges {.build}
-**Volume**  
-- Data collection & storage allows access to huge amounts of medical information  
-  
-**Ubiquity**  
-- Data are available anywhere across geography, social, and economic classes   
-  
-**Latency**  
-- Technology facilitates no delay in access to data    
-  
-## How do you make better health care decisions? {.build}
-**Data-driven** decision making!  
-  
-```{r hierarchy, echo=FALSE, fig.cap="", out.height = '100%'}
-url <- "https://upload.wikimedia.org/wikipedia/commons/0/06/DIKW_Pyramid.svg"
-knitr::include_graphics(url)
-```
-<font size = "1">https://en.wikipedia.org/wiki/DIKW_pyramid</font>
-  
 ## Emerging field of Data Science
 ```{r venn1, echo=FALSE, fig.cap="", out.height= '100%'}
 url <- "https://images.squarespace-cdn.com/content/v1/5150aec6e4b0e340ec52710a/1364352051365-HZAS3CLBF7ABLE3F5OBY/ke17ZwdGBToddI8pDm48kB2M2-8_3EzuSSXvzQBRsa1Zw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpxPe_8B-x4gq2tfVez1FwLYYZXud0o-3jV-FAs7tmkMHY-a7GzQZKbHRGZboWC-fOc/Data_Science_VD.png?format=1500w"
